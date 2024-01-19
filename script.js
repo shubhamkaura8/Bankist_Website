@@ -87,3 +87,21 @@ const handleHover = function (e) {
 };
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
+
+/////////////////////////////////////////////
+//Sticky navigation using Intersection Oberver API
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+
+const navHeight = nav.getBoundingClientRect().height;
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+const header = document.querySelector('.header');
+headerObserver.observe(header);
