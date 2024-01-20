@@ -148,3 +148,84 @@ const imgObserver = new IntersectionObserver(imgLoader, {
 });
 
 imgTargets.forEach(imgTarget => imgObserver.observe(imgTarget));
+
+/////////////////////////////////////
+//Slider
+
+const slider = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const dotsContainer = document.querySelector('.dots');
+  let curSlide = 0;
+  const maxSlides = slides.length;
+
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotsContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class= "dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+
+  const activeDot = function (slide) {
+    document.querySelectorAll('.dots__dot').forEach(dot => {
+      dot.classList.remove('dots__dot--active');
+      if (dot.dataset.slide === `${slide}`)
+        dot.classList.add('dots__dot--active');
+    });
+    // document.querySelector(`.dots__dot[dataset-slide]="${i}" `).classList.add('dots__dot--active'); This will also work!
+  };
+
+  const goToSlide = function (slide) {
+    slides.forEach((s, i) => {
+      s.style.transform = `translateX(${100 * (i - slide)}%)`;
+      //currSlide = 1: -100% ,0%,100%,200%
+    });
+  };
+
+  //Next slide
+  const nextSlide = function () {
+    if (curSlide === maxSlides - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+    goToSlide(curSlide);
+    activeDot(curSlide);
+  };
+
+  //Prev Slide
+  const prevSlide = function (slide) {
+    if (curSlide === 0) {
+      curSlide = maxSlides - 1;
+    } else {
+      curSlide--;
+    }
+    goToSlide(curSlide);
+    activeDot(curSlide);
+  };
+
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight') nextSlide();
+  });
+
+  dotsContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      curSlide = +e.target.dataset.slide;
+      goToSlide(curSlide);
+      activeDot(curSlide);
+    }
+  });
+  const init = function () {
+    goToSlide(curSlide);
+    createDots();
+    activeDot(curSlide);
+  };
+  init();
+};
+slider();
